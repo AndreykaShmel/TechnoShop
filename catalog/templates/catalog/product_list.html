@@ -1,0 +1,39 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <h4>Категории</h4>
+        <div class="list-group mb-4">
+            <a href="{% url 'catalog:product_list' %}" class="list-group-item list-group-item-action {% if not category %}active{% endif %}">Все товары</a>
+            {% for c in categories %}
+                <a href="{% url 'catalog:product_list_by_category' c.slug %}" class="list-group-item list-group-item-action {% if category.slug == c.slug %}active{% endif %}">
+                    {{ c.name }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-md-9">
+        <h2>{% if category %}{{ category.name }}{% else %}Все товары{% endif %}</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
+            {% for product in products %}
+                <div class="col">
+                    <div class="card h-100">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">Нет фото</div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text fw-bold">{{ product.price }} ₽</p>
+                            <a href="{{ product.get_absolute_url }}" class="btn btn-primary w-100">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p>Товаров пока нет.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

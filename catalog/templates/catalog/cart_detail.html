@@ -1,0 +1,42 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<h2>Ваша корзина</h2>
+{% if cart|length > 0 %}
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th>Товар</th>
+                <th>Количество</th>
+                <th>Цена</th>
+                <th>Итого</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }} шт.</td>
+                    <td>{{ item.price }} ₽</td>
+                    <td>{{ item.total_price }} ₽</td>
+                    <td>
+                        <form action="{% url 'catalog:cart_remove' item.product.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="text-end">
+        <h3>Итого: {{ cart.get_total_price }} ₽</h3>
+        <!-- Вот здесь была ошибка, теперь ссылка правильная: -->
+        <a href="{% url 'catalog:order_create' %}" class="btn btn-primary btn-lg mt-3">Оформить заказ</a>
+    </div>
+{% else %}
+    <p>Ваша корзина пуста.</p>
+    <a href="{% url 'catalog:product_list' %}" class="btn btn-secondary">Вернуться в магазин</a>
+{% endif %}
+{% endblock %}
